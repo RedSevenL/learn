@@ -1,0 +1,111 @@
+body{
+    background-color: #f4f4f4;
+    color: #555555;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    font: normal 16px Arial, Helvetica, sans-serif;
+    line-height: 1.6 em;
+}
+
+p{
+    margin: 5px 10px 5px 10px;
+}
+
+.box1{
+    background-color: antiquewhite;
+    color: royalblue;
+
+    border: 5px red solid;
+    border-left: 5px blue dotted;
+    border-right: 5px green double;
+    border-top: 5px yellow solid;
+    border-bottom: 5px purple dashed;
+
+}
+
+.box1 h1{
+    font-family: 'Times New Roman', Times, serif;
+    font-style: italic;
+    text-decoration: underline;
+    text-transform: uppercase;
+    letter-spacing: 1em;
+}
+
+.box2{
+    border: 5px dotted #333;
+    border-radius: 10px;
+}
+
+.box2 h1{
+    text-align: center;
+}
+
+.container{
+    width: 80%;
+    margin: auto;
+
+    border: 5px #333 solid;
+}
+
+.list1 li {
+    background-color: greenyellow;
+    list-style: square;
+}
+
+button{
+    background-color: #656060;
+    color: #fff;
+}
+button:hover{
+    background-color: red;
+}
+button:active{
+    background-color: green;
+}
+
+a:hover{
+    color: red;
+}
+
+#main-block{
+    float: left;
+    width: 34.33%;
+}
+
+#sidebar{
+    float: left;
+    width: 34.33%;
+}
+
+.list2 li:nth-child(2n+1){
+    background-color: blue;
+    color: white;
+    width: 200px;
+}
+
+img{
+    position: absolute;
+    top: 650px;
+    left: 650px;
+    width: 200px;
+    pointer-events: none;
+}
+
+#fixed{
+    background-color: #656060;
+
+    position: fixed;
+    top: 750px;
+    left: 600px;
+}
+
+#fixed:hover{
+    background-color: red;
+}
+
+/* 定义一个类名，存放黑底红字样式 */
+.dark-theme {
+    color: red;
+    background-color: black;
+}

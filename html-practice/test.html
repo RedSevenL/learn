@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <!-- 头部 放页面元信息：编码、标题、CSS-->
+    <head>
+        <title>我的第一个HTML页面</title>
+        <link rel="stylesheet" href="style.css"> <!-- 链接外部CSS文件 -->
+    </head>
+    <!-- 主体 -->
+    <body>
+        <div class="container">
+            <div class="box1">
+                <h1>欢迎来到我的第一个HTML页面</h1>
+                <p>这是一个<strong>简单</strong>的HTML页面，用于测试HTML的基本结构。</p>
+                <p>这是一个简单的<abbr title="Hyper Text Markup Language">HTML</abbr>页面，用于测试HTML的基本结构。</p>
+                <p>Lorem ipsum dolor sit <a href="https://www.bilibili.com/video/BV1vs411M7aT/?spm_id_from=333.1387.favlist.content.click&vd_source=aef05889c5c801c119c4f7af85e6d5d9" target="_blank">哔哩哔哩</a> met consectetur adipisicing elit. Recusandae, earum!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem non laudantium et dicta ipsam dignissimos, ipsa natus repellat aliquam similique molestiae consequatur, consequuntur, odio dolores fuga? Atque fugit nesciunt enim.</p>
+            </div>
+            <div class="box2">
+                <h1>欢迎来到我的第一个HTML页面</h1>
+                <p>这是一个<strong>简单</strong>的<abbr title="Hyper Text Markup Language">HTML</abbr>页面，用于测试HTML的基本结构。</p>
+                <p class="text">这是一个<strong>简单</strong>的HTML页面，用于测试HTML的基本结构。</p>
+                <p>Lorem ipsum dolor sit <a href="https://www.bilibili.com/video/BV1vs411M7aT/?spm_id_from=333.1387.favlist.content.click&vd_source=aef05889c5c801c119c4f7af85e6d5d9" target="_blank">哔哩哔哩</a> met consectetur adipisicing elit. Recusandae, earum!</p>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem non laudantium et dicta ipsam dignissimos, ipsa natus repellat aliquam similique molestiae consequatur, consequuntur, odio dolores fuga? Atque fugit nesciunt enim.</p>
+            </div>
+        </div>
+
+        <!-- 列表 -->
+        <div class="list1">
+            <ul>
+                <li>苹果</li>
+                <li>香蕉</li>
+            </ul>
+        </div>
+
+        <!-- 表格 -->
+        <table>
+            <thead>
+                <tr>
+                    <th>水果</th>
+                    <th>价格</th>
+                    <th>数量</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>苹果</td>
+                    <td>10元</td>
+                    <td>10个</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- 多列布局 -->
+        <div id="main-block">
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt esse fugiat recusandae, cum neque impedit?
+            </p>
+        </div>
+        <div id="sidebar">
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt esse fugiat recusandae, cum neque impedit?
+            </p>
+        </div>
+
+        <!-- 表单 -->
+        <form action="form.js" method="post">
+            <div>
+                <label>用户名</label>
+                <input type="text" name="username" placeholder="请输入用户名">
+            </div>
+            <input type="submit" value="提交">
+        </form>
+
+        <!-- 按钮 -->
+        <button id="color-btn">点击我</button>
+        <button id="fixed">点击我</button>
+
+        <!-- 列表 -->
+        <div class="list2">
+            <ul>
+                <li>苹果</li>
+                <li>香蕉</li>
+                <li>苹果</li>
+                <li>猪猪</li>
+                <li>苹果</li>
+                <li>香蕉</li>
+            </ul>
+        </div>
+        
+        <!-- 图片 -->
+        <img src="img/pic.png" alt="怪虫">
+        <script src="test.js"></script>
+    </body>
+</html>
