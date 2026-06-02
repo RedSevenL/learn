@@ -2,7 +2,7 @@ const url: string = 'https://api.thedogapi.com/v1/images/search';
 const button: HTMLButtonElement | null = document.querySelector('button');
 const tableBody: HTMLTableSectionElement | null = document.querySelector('#tableBody');
 
-interface CatType {
+interface DogType {
     id: string;
     url: string;
     height: number;
@@ -10,7 +10,7 @@ interface CatType {
     test?: boolean;
 }
 
-class Cat implements CatType {
+class Dog implements DogType {
     test?: boolean;
   
     constructor(
@@ -21,7 +21,7 @@ class Cat implements CatType {
     ) {}
   }
 //构造参数前加了 public，相当于 id: string;this.id = id;
-/*class Cat implements CatType {
+/*class Dog implements DogType {
   id: string;
   url: string;
   height: number;
@@ -37,18 +37,24 @@ class Cat implements CatType {
 }*/
 
 class WebDisplay {
-    public static addData(data: CatType) :void {
-        const cat: Cat = new Cat(data.id, data.url, data.height, data.width);
+    public static addData(data: DogType) :void {
+        const dog: Dog = new Dog(data.id, data.url, data.height, data.width);
         const tableRow: HTMLTableRowElement = document.createElement('tr');
         tableRow.innerHTML = `
-        <td>${cat.id}</td>
-        <td><img src="${cat.url}" /></td>
-        <td>${cat.height.toString()}</td>
-        <td>${cat.width.toString()}</td>
-        <td>${cat.url}</td>
+        <td>${dog.id}</td>
+        <td><img src="${dog.url}" /></td>
+        <td>${dog.height.toString()}</td>
+        <td>${dog.width.toString()}</td>
+        <td>${dog.url}</td>
         <td><a href="#">X</a></td>
         `;
         tableBody?.appendChild(tableRow); 
+    }
+    public static deleteData(deleteButton: HTMLAnchorElement): void {
+        const td = deleteButton.parentElement as HTMLTableCellElement;
+        const tr = td.parentElement as HTMLTableRowElement;
+        tr.remove();
+         
     }
 }
 
@@ -60,8 +66,8 @@ async function getJSON<T>(url: string): Promise<T> {
 
 async function getData(): Promise<void> {
     try {
-        const json: CatType[] = await getJSON<CatType[]>(url);
-        const data: CatType = json[0];
+        const json: DogType[] = await getJSON<DogType[]>(url);
+        const data: DogType = json[0];
         WebDisplay.addData(data);
     }
     catch (error: Error|unknown) {
@@ -77,3 +83,7 @@ async function getData(): Promise<void> {
 }
 
 button?.addEventListener<`click`>('click', getData);
+
+tableBody?.addEventListener<`click`>('click', (ev: MouseEvent) => {
+    WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
+});
