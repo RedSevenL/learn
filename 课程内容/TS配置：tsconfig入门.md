@@ -239,35 +239,79 @@ ts-practice/
 
 ## 终端怎么配合 tsc
 
-方式一：进入练习目录后运行。
+当前项目在 `package.json` 里配置了两个常用命令：
 
-```bash
-cd ts-practice
-tsc
+```json
+{
+  "scripts": {
+    "ts:watch": "tsc -p ts-practice/tsconfig.json --watch",
+    "serve:ts": "python3 -m http.server 5500 --directory ts-practice"
+  }
+}
 ```
 
-方式二：站在项目根目录运行。
+它们分工不同。
+
+### npm run ts:watch
+
+```bash
+npm run ts:watch
+```
+
+作用：监听 TypeScript 文件变化，并自动编译。
+
+也就是你每次保存：
+
+```text
+ts-practice/src/index.ts
+```
+
+它都会自动重新生成：
+
+```text
+ts-practice/dist/index.js
+```
+
+### npm run serve:ts
+
+```bash
+npm run serve:ts
+```
+
+作用：启动本地网页服务器。
+
+启动后浏览器访问：
+
+```text
+http://localhost:5500/
+```
+
+不要直接双击打开 `index.html`，因为那样地址会是 `file://...`。浏览器对 `file://` 页面有安全限制，容易出现脚本、请求或 source map 相关报错。
+
+`localhost` 是更接近真实开发环境的访问方式。
+
+日常操作顺序：
+
+1. 打开第一个终端，运行 `npm run serve:ts`。
+2. 打开第二个终端，运行 `npm run ts:watch`。
+3. 浏览器访问 `http://localhost:5500/`。
+4. 在 `ts-practice/src/index.ts` 写 TypeScript。
+5. 保存文件后等待自动编译。
+6. 刷新浏览器查看效果。
+7. 如果页面没变化，先看 `ts:watch` 终端有没有 TypeScript 报错。
+
+两个命令的区别：
+
+| 命令 | 作用 |
+| --- | --- |
+| `npm run serve:ts` | 启动本地网页服务器，让页面能通过 `localhost` 打开 |
+| `npm run ts:watch` | 监听并编译 TS，把 `src/index.ts` 变成 `dist/index.js` |
+
+如果只想手动编译一次，也可以运行：
 
 ```bash
 tsc -p ts-practice/tsconfig.json
 ```
-
-更推荐练习时使用监听模式：
-
-```bash
-cd ts-practice
-tsc --watch
-```
-
-这样你每次保存 `src/index.ts`，TypeScript 都会自动重新编译到 `dist/index.js`。
-
-日常操作顺序：
-
-1. 打开一个终端运行 `cd ts-practice && tsc --watch`。
-2. 在 `src/index.ts` 写 TypeScript。
-3. 保存文件后等待自动编译。
-4. 浏览器打开或刷新 `index.html`。
-5. 如果页面没变化，先看终端有没有 TypeScript 报错。
 
 ## 入门阶段记住
 
@@ -276,4 +320,6 @@ tsc --watch
 - `.ts` 要先用 `tsc` 编译成 `.js`。
 - HTML 引入编译后的 `.js` 文件。
 - 自己写源码放 `src/`，编译结果放 `dist/`。
+- 用 `localhost` 访问页面，不要直接用 `file://` 打开。
+- `serve:ts` 负责开网页服务，`ts:watch` 负责自动编译 TS。
 - 浏览器 DOM 练习要在 `lib` 里包含 `"DOM"`。
