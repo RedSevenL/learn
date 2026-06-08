@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "module": "Preserve",
+      "lib": ["DOM", "ES2020"],
+      "rootDir": "./src",
+      "outDir": "./dist",
+      "strict": true,
+      "sourceMap": true,
+      "noEmitOnError": true,
+      "skipLibCheck": true
+    },
+    "include": ["src/**/*.ts"]
+  }
+  
