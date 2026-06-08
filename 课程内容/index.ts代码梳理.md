@@ -248,7 +248,7 @@ error instanceof Error
 ### 按钮点击：新增图片
 
 ```ts
-button?.addEventListener<`click`>('click', getData);
+button?.addEventListener('click', getData);
 ```
 
 这句表示：
@@ -258,19 +258,65 @@ button?.addEventListener<`click`>('click', getData);
 - 点击后执行 `getData`；
 - `getData` 会请求新数据，并追加新表格行。
 
-普通写法可以更简单：
+这里没有手写 `<\`click\`>` 和 `(ev: MouseEvent)`，因为 TypeScript 通常可以根据 `'click'` 自动推断事件类型。入门阶段优先记这种简单写法。
+
+### addEventListener 的基本格式
+
+```ts
+元素.addEventListener('事件名', 事件触发后要执行的函数);
+```
+
+例如：
 
 ```ts
 button?.addEventListener('click', getData);
 ```
 
-`addEventListener<\`click\`>` 这里虽然能表达事件类型，但入门阶段先用普通写法更清晰。
+意思是：
+
+> 监听按钮的点击事件，点击后执行 `getData`。
+
+常见事件名：
+
+| 事件名 | 常见触发场景 |
+| --- | --- |
+| `'click'` | 鼠标点击按钮、链接、图片、表格等元素 |
+| `'keydown'` | 键盘按下某个键 |
+| `'input'` | 输入框内容发生变化 |
+| `'submit'` | 表单提交 |
+
+示例：
+
+```ts
+input.addEventListener('input', () => {
+  console.log('输入框内容变了');
+});
+
+document.addEventListener('keydown', () => {
+  console.log('按下了键盘');
+});
+
+form.addEventListener('submit', () => {
+  console.log('提交了表单');
+});
+```
+
+简单记：
+
+> `addEventListener('click', ...)` 就是监听点击事件。  
+> 第一个参数写“监听什么事件”，第二个参数写“事件发生后做什么”。
 
 ### 表格点击：删除图片行
 
 ```ts
-tableBody?.addEventListener<`click`>('click', (ev: MouseEvent) => {
-    WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
+tableBody?.addEventListener('click', (ev) => {
+    const target = ev.target;
+
+    if (!(target instanceof HTMLAnchorElement)) {
+        return;
+    }
+
+    WebDisplay.deleteData(target);
 });
 ```
 
@@ -278,50 +324,85 @@ tableBody?.addEventListener<`click`>('click', (ev: MouseEvent) => {
 
 - 如果 `tableBody` 存在；
 - 就监听整个表格主体的点击事件；
-- 点击后把 `ev.target` 当成 `HTMLAnchorElement`；
-- 再交给 `WebDisplay.deleteData()` 删除对应行。
+- 点击后先取出真正被点击的元素 `ev.target`；
+- 如果点到的不是 `<a>`，直接 `return`，不删除；
+- 如果点到的是 `<a>`，再交给 `WebDisplay.deleteData()` 删除对应行。
 
 这属于一种常见写法：事件委托。
 
 事件委托的意思是：不需要给每一个 `X` 单独绑定事件，而是把事件绑定在父元素 `tableBody` 上。后面动态新增的表格行，也能被这个事件监听到。
 
-不过当前代码有一个需要注意的点：它没有判断用户点到的是不是 `X` 链接。也就是说，如果点到表格里的图片、文字或其他单元格，也会尝试执行删除逻辑。
-
-更稳一点的写法是先判断目标元素：
+这里最关键的是这句：
 
 ```ts
-tableBody?.addEventListener('click', (ev: MouseEvent) => {
-  const target = ev.target;
-
-  if (!(target instanceof HTMLAnchorElement)) {
+if (!(target instanceof HTMLAnchorElement)) {
     return;
-  }
-
-  WebDisplay.deleteData(target);
-});
+}
 ```
+
+它是在运行时判断：当前点到的元素到底是不是 `<a>`。
+
+如果点到图片、文字、单元格空白处，就不会继续执行删除。
+
+如果点到 `X` 链接，`target` 就是 `HTMLAnchorElement`，可以安全传给：
+
+```ts
+WebDisplay.deleteData(target);
+```
+
+### instanceof 的含义
+
+`instanceof` 是 JavaScript 里的运行时判断，用来检查某个对象是不是由某个类、构造函数或 DOM 元素类型创建出来的。
+
+格式：
+
+```ts
+对象 instanceof 类型
+```
+
+返回值是布尔值：
+
+- 是这个类型：返回 `true`。
+- 不是这个类型：返回 `false`。
+
+例如：
+
+```ts
+target instanceof HTMLAnchorElement
+```
+
+意思是：
+
+> 判断 `target` 是不是一个 `<a>` 元素。
+
+配合取反 `!`：
+
+```ts
+if (!(target instanceof HTMLAnchorElement)) {
+    return;
+}
+```
+
+意思是：
+
+> 如果 `target` 不是 `<a>`，就直接结束函数，不继续删除。
+
+`instanceof` 和 `as` 的区别：
+
+| 写法 | 作用 | 是否真的检查运行时对象 |
+| --- | --- | --- |
+| `target as HTMLAnchorElement` | 类型断言，告诉 TS 我认为它是 `<a>` | 否 |
+| `target instanceof HTMLAnchorElement` | 运行时判断，检查它是不是真的是 `<a>` | 是 |
+
+简单记：
+
+> `as` 是“我告诉 TS 它是什么”。  
+> `instanceof` 是“运行时真的检查它是不是”。
 
 ## 当前代码里的几个注意点
 
-### 1. 命名已经统一成 dog
 
-现在接口地址是：
-
-```ts
-https://api.thedogapi.com/v1/images/search
-```
-
-对应类型和类名也已经统一为：
-
-```ts
-DogType
-Dog
-dog
-```
-
-这样语义就一致了：请求狗狗图片，代码里也用狗狗相关命名。
-
-### 2. 删除功能已经有了，但还可以更稳
+### 1. 删除功能已经做了目标判断
 
 表格行里有：
 
@@ -329,20 +410,17 @@ dog
 <a href="#">X</a>
 ```
 
-现在点击表格区域时会调用：
+现在点击表格区域时，会先判断点到的元素是不是 `<a>`：
 
 ```ts
-WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
+if (!(target instanceof HTMLAnchorElement)) {
+    return;
+}
 ```
 
-问题是：当前代码直接把点击目标当作删除按钮，没有先判断它是不是 `<a>`。
+只有确认点到的是删除链接，才会执行删除。这样点图片、文字或其他单元格时，不会误删整行。
 
-更安全的做法是：
-
-- 先判断 `ev.target instanceof HTMLAnchorElement`。
-- 确认点到的是删除链接后，再执行删除。
-
-### 3. 初始 HTML 里有一行占位数据
+### 2. 初始 HTML 里有一行占位数据
 
 `index.html` 的 `tbody` 里现在自带了一行：
 
@@ -355,7 +433,7 @@ WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
 
 所以页面刚打开时会显示一行假数据。后面如果想让表格一开始为空，可以删掉这行。
 
-### 4. `innerHTML` 适合练习，但要知道风险
+### 3. `innerHTML` 适合练习，但要知道风险
 
 你现在用：
 
@@ -367,9 +445,9 @@ tableRow.innerHTML = `...`;
 
 但真实项目里，如果内容来自用户输入，直接拼 `innerHTML` 可能有安全风险。后面可以练习用 `createElement()` 和 `textContent` 更安全地生成 DOM。
 
-### 5. `<HTMLAnchorElement>` 和 `as HTMLAnchorElement` 是同类写法
+### 4. 类型断言和运行时判断不一样
 
-当前代码里有：
+旧写法里可能会看到：
 
 ```ts
 WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
@@ -381,7 +459,22 @@ WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
 WebDisplay.deleteData(ev.target as HTMLAnchorElement);
 ```
 
-在 `.tsx` 文件里通常不能用 `<HTMLAnchorElement>` 这种写法，因为容易和 JSX 标签冲突。普通 `.ts` 文件里可以用，但入门阶段建议优先记 `as HTMLAnchorElement`，可读性更好。
+这两种都是类型断言，意思是告诉 TypeScript：“我认为它是 `<a>`”。
+
+但类型断言只影响 TypeScript 检查，不会改变浏览器里真实的元素。
+
+所以如果想防止点错地方，不能只靠断言，更应该用运行时判断：
+
+```ts
+if (!(target instanceof HTMLAnchorElement)) {
+    return;
+}
+```
+
+入门阶段可以这样记：
+
+- `as HTMLAnchorElement`：告诉 TS 我认为它是 `<a>`。
+- `target instanceof HTMLAnchorElement`：真的检查它是不是 `<a>`。
 
 ## 一句话总结
 

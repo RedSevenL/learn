@@ -60,7 +60,7 @@ class WebDisplay {
 
 async function getJSON<T>(url: string): Promise<T> {
     const response: Response = await fetch(url);
-    const json: Promise<T> = await response.json();
+    const json: T = await response.json();
     return json;
 }
 
@@ -82,8 +82,14 @@ async function getData(): Promise<void> {
     }
 }
 
-button?.addEventListener<`click`>('click', getData);
+button?.addEventListener('click', getData);
 
-tableBody?.addEventListener<`click`>('click', (ev: MouseEvent) => {
-    WebDisplay.deleteData(<HTMLAnchorElement>ev.target);
+tableBody?.addEventListener('click', (ev) => {
+    const target = ev.target;
+
+    if (!(target instanceof HTMLAnchorElement)) {
+        return;
+    }
+
+    WebDisplay.deleteData(target);
 });

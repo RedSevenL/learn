@@ -282,18 +282,50 @@ const a = identity<number>(123);
 const b = identity<string>("hello");
 ```
 
-这里的 `T` 是一个类型变量：
+### 明白尖括号 <>
+
+泛型里的 `<>` 用来放“类型参数”，可以把它理解成函数类型层面的参数。
+
+```ts
+function identity<T>(value: T): T {
+  return value;
+}
+```
+
+这里的 `<T>` 表示：先声明一个临时类型变量 `T`。
+
+后面的两个 `T` 表示使用这个类型变量：
+
+```ts
+value: T // 参数是什么类型
+: T      // 返回值是什么类型
+```
+
+所以这段代码的意思是：
 
 - `T` 不是固定类型。
 - 调用函数时，`T` 会变成具体类型。
 - `value: T` 和返回值 `: T` 表示输入什么类型，就返回什么类型。
 
-多数情况下，TS 可以自动推断泛型类型，不必手写 `<number>` 或 `<string>`。
+调用时也可以用 `<>` 明确指定类型：
+
+```ts
+identity<number>(123);
+identity<string>("hello");
+```
+
+这里的 `<number>` 和 `<string>` 是在告诉 TS：这次调用时，`T` 分别等于 `number` 和 `string`。
+
+多数情况下，TS 可以自动推断类型，不必手写 `<number>` 或 `<string>`。
 
 ```ts
 const a = identity(123);     // 推断为 number
 const b = identity("hello"); // 推断为 string
 ```
+
+简单记：
+
+> 定义函数时，`<T>` 是声明一个类型变量；调用函数时，`<number>` 是指定这次用什么具体类型。
 
 ### 泛型数组
 
@@ -356,9 +388,7 @@ let num = value as number;
 
 - `as` 本身常用，但 `as number` 不算特别高频。
 - 普通函数返回值不优先写 `return value as number`。
-- 更推荐直接在函数声明处标明返回值类型。
-
-推荐写法：
+- 函数返回数字时，更推荐直接在函数声明处标明返回值类型。
 
 ```ts
 function getScore(): number {
@@ -366,7 +396,7 @@ function getScore(): number {
 }
 ```
 
-不推荐把 `as number` 当成普通返回值类型写法：
+不要把 `as number` 当成普通返回值类型写法：
 
 ```ts
 function getScore() {
@@ -384,11 +414,9 @@ console.log(input.value);
 
 这里是因为 `querySelector` 只能大概知道查到的是一个元素，但不知道它具体是不是输入框，所以可以用 `as HTMLInputElement` 告诉 TS 它的具体类型。
 
-更准确地说：
+简单记：
 
-- `as HTMLInputElement`、`as HTMLElement` 这类 DOM 类型断言更常见。
-- `as number` 只有在值来自 `unknown`、外部数据或 TS 无法推断时才会用。
-- 如果只是写普通函数返回数字，用 `function fn(): number` 更自然。
+> `as HTMLInputElement`、`as HTMLElement` 这类 DOM 类型断言更常见；`as number` 只在值来自 `unknown`、外部数据或 TS 无法推断时才会用。
 
 ## 13. 回调函数签名
 
