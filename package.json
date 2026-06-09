@@ -1,10 +1,4 @@
 {
-  "scripts": {
-    "ts:watch": "tsc -p ts-practice/tsconfig.json --watch",
-    "serve:ts": "python3 -m http.server 5500 --directory ts-practice",
-    "ts:watch:max": "tsc -p max-number-game/tsconfig.json --watch",
-    "serve:max": "python3 -m http.server 5501 --directory max-number-game"
-  },
   "devDependencies": {
     "typescript": "^6.0.3"
   }
