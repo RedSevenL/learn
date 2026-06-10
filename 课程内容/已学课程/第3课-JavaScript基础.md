@@ -873,9 +873,9 @@ function calculateMonthlySummary(income, expense) {
 测试一下：
 
 ```js
-console.log(calculateMonthlySummary(30000, 18000));
-console.log(calculateMonthlySummary(30000, 30000));
-console.log(calculateMonthlySummary(30000, 35000));
+console.log(calculateMonthlySummary(30000, 18000).message);
+console.log(calculateMonthlySummary(30000, 30000).message);
+console.log(calculateMonthlySummary(30000, 35000).message);
 ```
 
 你应该看到三种不同结果：
@@ -885,6 +885,8 @@ console.log(calculateMonthlySummary(30000, 35000));
 本月收支平衡
 本月超支 5000 元
 ```
+
+这里函数返回的是一个完整对象，但我们只想查看提示文案，所以用 `.message` 取出对象里的 `message` 字段。
 
 这说明函数可以根据输入自动走不同逻辑。
 
