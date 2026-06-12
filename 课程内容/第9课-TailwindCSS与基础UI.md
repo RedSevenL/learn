@@ -432,6 +432,26 @@ className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm outli
 
 如果按钮没有 hover 状态，用户体验会弱一些。
 
+### TailwindCSS 状态前缀怎么读
+
+本课会看到一些带冒号的类名：
+
+```tsx
+hover:bg-gray-700
+focus:ring-2
+disabled:bg-gray-400
+```
+
+可以这样读：
+
+| 写法 | 含义 |
+| --- | --- |
+| `hover:bg-gray-700` | 鼠标悬停时，背景变成 gray-700 |
+| `focus:ring-2` | 输入框聚焦时，显示 2 像素外圈 |
+| `disabled:bg-gray-400` | 按钮禁用时，背景变成 gray-400 |
+
+冒号前面表示“什么时候生效”，冒号后面表示“具体样式”。
+
 ## 十、美化错误提示
 
 错误提示应该明显，但不要吓人。

@@ -369,6 +369,30 @@ export default function Home() {
 
 React 中渲染列表，常用数组的 `.map()`。
 
+先看一个不涉及 React 的例子：
+
+```ts
+const names = ["工资卡", "现金", "信用卡"];
+
+const displayNames = names.map((name) => `账户：${name}`);
+```
+
+这段代码的意思是：
+
+> 对 names 里的每一个 name，都生成一个新的显示文本。
+
+结果类似：
+
+```ts
+["账户：工资卡", "账户：现金", "账户：信用卡"]
+```
+
+所以 `.map()` 可以先理解为：
+
+> 把一个数组，转换成另一个数组。
+
+再看 React 里的写法：
+
 例如：
 
 ```tsx
@@ -394,6 +418,35 @@ export default function Home() {
 这段代码可以读作：
 
 > 对 accounts 里的每一个 account，都渲染一个 div。
+
+其中这一行最关键：
+
+```tsx
+{accounts.map((account) => (
+```
+
+可以拆开读：
+
+| 片段 | 含义 |
+| --- | --- |
+| `{ ... }` | 在 JSX 里写 JavaScript 表达式 |
+| `accounts.map(...)` | 遍历 accounts 数组，并生成一组新内容 |
+| `(account) => (...)` | 箭头函数：每次拿到一个 account，返回后面的 JSX |
+| `<div>...</div>` | 每个账户对应的一块页面结构 |
+
+这里的箭头函数也可以粗略理解成：
+
+```tsx
+function renderAccount(account) {
+  return <div>{account.name}</div>;
+}
+```
+
+只是 React 中经常把它写得更短：
+
+```tsx
+(account) => <div>{account.name}</div>
+```
 
 如果 `accounts` 有 3 项，就渲染 3 个账户卡片。
 
@@ -883,7 +936,7 @@ function AccountCard({ account }: AccountCardProps) {
 
 props 名字必须和组件定义一致。
 
-### 5. class 写成了 class
+### 5. className 写成了 class
 
 错误写法：
 
@@ -1018,7 +1071,7 @@ http://localhost:3000
   ↓
 通过 props 传递数据
   ↓
-用 map 渲染列表
+在组件里用 map 渲染列表
 ```
 
 下一课会学习 React 状态与表单。我们会在账户列表基础上继续前进，实现“新增账户”表单。
