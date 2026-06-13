@@ -76,12 +76,14 @@ app/
 
 对应的浏览器路径是：
 
-| 文件 | 浏览器路径 |
-| --- | --- |
-| `app/page.tsx` | `/` |
+
+| 文件                       | 浏览器路径        |
+| ------------------------ | ------------ |
+| `app/page.tsx`           | `/`          |
 | `app/dashboard/page.tsx` | `/dashboard` |
-| `app/import/page.tsx` | `/import` |
+| `app/import/page.tsx`    | `/import`    |
 | `app/scenarios/page.tsx` | `/scenarios` |
+
 
 这就是 App Router 最重要的规则：
 
@@ -174,6 +176,25 @@ export default function DashboardPage() {
 这样阅读代码时更清楚。
 
 ## 四、创建首页
+
+`app/page.tsx` 目前还是账户管理页，不是首页。
+
+不要把这段账户管理代码丢掉，而是把它迁移到 `app/dashboard/page.tsx`，继续承接账户管理功能。
+
+操作顺序：
+
+1. 创建 `app/dashboard/` 文件夹。
+2. 把当前 `app/page.tsx` 内容复制到 `app/dashboard/page.tsx`。
+3. 再把 `app/page.tsx` 改成下面的首页入口。
+
+调整后：
+
+
+| 文件                       | 作用                    |
+| ------------------------ | --------------------- |
+| `app/page.tsx`           | 首页，负责导航到各功能页          |
+| `app/dashboard/page.tsx` | 财务面板页，先承接第 9 课的账户管理功能 |
+
 
 首页路径是：
 
@@ -327,52 +348,49 @@ export default function HomePage() {
 app/dashboard/page.tsx
 ```
 
-写入：
+这一步先不要重新写一个全新的财务面板。
+
+因为第 9 课已经做出了账户管理页，所以第 10 课可以先把它迁移过来：
+
+```txt
+把原来的 app/page.tsx 内容
+  ↓
+复制到 app/dashboard/page.tsx
+```
+
+复制后建议做一个小调整：
 
 ```tsx
-import Link from "next/link";
-
 export default function DashboardPage() {
-  return (
-    <main className="min-h-screen bg-gray-50 px-6 py-8">
-      <div className="mx-auto max-w-4xl">
-        <Link href="/" className="text-sm text-gray-500 hover:text-gray-900">
-          返回首页
-        </Link>
-
-        <header className="mt-6 mb-8">
-          <p className="text-sm font-medium text-gray-500">Dashboard</p>
-          <h1 className="mt-2 text-3xl font-bold text-gray-900">财务面板</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            这里会展示账户、流水、负债和月度财务摘要。
-          </p>
-        </header>
-
-        <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">月收入</p>
-            <p className="mt-2 text-2xl font-bold text-gray-900">30,000 元</p>
-          </div>
-
-          <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">月支出</p>
-            <p className="mt-2 text-2xl font-bold text-gray-900">18,000 元</p>
-          </div>
-
-          <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-            <p className="text-sm text-gray-500">月结余</p>
-            <p className="mt-2 text-2xl font-bold text-gray-900">12,000 元</p>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
+  ...
 }
 ```
 
-这个页面目前仍然使用假数据。
+原来函数名可能是：
 
-当前阶段重点是学习页面路由，不是接数据库。
+```tsx
+export default function Home() {
+  ...
+}
+```
+
+函数名不是路由必须要求的，但改成 `DashboardPage` 更容易看懂：
+
+```txt
+app/dashboard/page.tsx
+  ↓
+DashboardPage
+```
+
+注意：
+
+- 第 9 课账户管理页用了 `useState`、`onChange`、`onSubmit`。
+- 所以迁移到 `app/dashboard/page.tsx` 后，文件顶部仍然要保留 `"use client"`。
+- `Account` 类型、`initialAccounts`、`AccountCard`、`AccountList`、`handleSubmit` 都先保留。
+
+当前阶段重点是学习页面路由。
+
+所以 `/dashboard` 先承接“账户管理”功能即可，后面再逐步扩展成真正的财务面板。
 
 ## 七、创建 CSV 导入页
 
@@ -571,7 +589,7 @@ RootLayout
 
 ## 十一、给 layout 添加公共导航
 
-如果每个页面都写“返回首页”，会有重复。
+如果每个页面都单独写返回首页链接，会有重复。
 
 更好的方式是把导航放进 `layout.tsx`。
 
@@ -625,7 +643,15 @@ export default function RootLayout({
 
 这样每个页面都会自动拥有同一组导航。
 
-页面文件里就不必重复写：
+这里的：
+
+```tsx
+{ href: "/", label: "首页" }
+```
+
+就是回到首页的导航入口。
+
+页面文件里就不必再单独重复写：
 
 ```tsx
 <Link href="/">返回首页</Link>
@@ -677,15 +703,17 @@ export default function DashboardPage() {
 
 简单判断规则：
 
-| 场景 | 是否需要 `"use client"` |
-| --- | --- |
-| 只展示标题和文字 | 不需要 |
-| 使用 `Link` 跳转 | 不需要 |
-| 使用 `.map()` 渲染列表 | 不需要 |
-| 使用 `useState` | 需要 |
-| 使用 `onClick` | 需要 |
-| 使用输入框 `onChange` | 需要 |
-| 使用表单提交交互 | 需要 |
+
+| 场景               | 是否需要 `"use client"` |
+| ---------------- | ------------------- |
+| 只展示标题和文字         | 不需要                 |
+| 使用 `Link` 跳转     | 不需要                 |
+| 使用 `.map()` 渲染列表 | 不需要                 |
+| 使用 `useState`    | 需要                  |
+| 使用 `onClick`     | 需要                  |
+| 使用输入框 `onChange` | 需要                  |
+| 使用表单提交交互         | 需要                  |
+
 
 上一课的账户表单用了 `useState` 和 `onChange`，所以需要 `"use client"`。
 
@@ -861,11 +889,14 @@ app/page.tsx
 app/dashboard/page.tsx
 ```
 
-页面内容包括：
+把第 9 课结束后的账户管理页迁移到这里。
 
-- 页面标题。
-- 简短说明。
-- 三个假数据摘要卡片：月收入、月支出、月结余。
+要求：
+
+- 保留 `"use client"`。
+- 保留账户列表状态和新增账户表单。
+- 可以把默认导出的函数名从 `Home` 改成 `DashboardPage`。
+- 先让 `/dashboard` 能打开原来的账户管理功能。
 
 ### 任务 3：创建 CSV 导入页
 
@@ -920,7 +951,7 @@ app/scenarios/page.tsx
 完成本课后，请检查：
 
 - `app/page.tsx` 可以作为首页打开。
-- `/dashboard` 可以打开财务面板页。
+- `/dashboard` 可以打开从第 9 课迁移过来的账户管理页。
 - `/import` 可以打开 CSV 导入页。
 - `/scenarios` 可以打开场景模拟页。
 - 首页可以点击进入其他页面。
