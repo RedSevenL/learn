@@ -421,14 +421,26 @@ ai-finance-cfo/lib/mock-data.ts
 
 这个文件目前用来集中存放前端假数据。
 
-账户 API 的假数据也可以先放在这里。
+第 12 课已经把账户假数据整理成：
 
-如果文件里已经有 `initialAccounts`，可以直接复用。
+```txt
+initialAccounts
+```
 
-如果还没有，在 `lib/mock-data.ts` 末尾加入：
+本课直接复用它。
+
+如果你的 `lib/mock-data.ts` 里还没有 `initialAccounts`，先按第 12 课的整理方式补上。
+
+文件顶部加入：
 
 ```ts
-export const accountApiItems = [
+import type { Account } from "@/types/finance";
+```
+
+文件中导出账户假数据：
+
+```ts
+export const initialAccounts: Account[] = [
   {
     id: "account_001",
     name: "工资卡",
@@ -450,15 +462,9 @@ export const accountApiItems = [
 ];
 ```
 
-当前先不强制抽类型。
+不要再单独新增另一份账户数组。
 
-等数据结构稳定后，再整理成：
-
-```txt
-types/
-schemas/
-lib/db/
-```
+否则页面用一份账户假数据，API 又用另一份账户假数据，后面会难维护。
 
 现在的重点是理解：
 
@@ -481,13 +487,13 @@ ai-finance-cfo/app/api/accounts/route.ts
 写入：
 
 ```ts
-import { accountApiItems } from "@/lib/mock-data";
+import { initialAccounts } from "@/lib/mock-data";
 
 export async function GET() {
   return Response.json({
     ok: true,
     data: {
-      accounts: accountApiItems
+      accounts: initialAccounts
     }
   });
 }
@@ -538,7 +544,7 @@ GET /api/accounts
   ↓
 app/api/accounts/route.ts
   ↓
-读取 accountApiItems
+读取 initialAccounts
   ↓
 返回 JSON
 ```
@@ -564,7 +570,7 @@ app/api/accounts/route.ts
 把 `app/api/accounts/route.ts` 改成：
 
 ```ts
-import { accountApiItems } from "@/lib/mock-data";
+import { initialAccounts } from "@/lib/mock-data";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -586,7 +592,7 @@ export async function GET(request: Request) {
   return Response.json({
     ok: true,
     data: {
-      accounts: accountApiItems
+      accounts: initialAccounts
     }
   });
 }

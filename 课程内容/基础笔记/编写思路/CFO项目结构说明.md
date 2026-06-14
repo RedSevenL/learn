@@ -2,9 +2,7 @@
 
 ## 一、这个项目是什么
 
-`ai-finance-cfo/` 是一个 Next.js + TypeScript 项目。
-
-它不是普通空文件夹，而是一个已经可以运行的前端应用。
+`ai-finance-cfo/` 是一个 Next.js + TypeScript 项目，目前已经是一个可以运行的前端应用。
 
 启动方式：
 
@@ -23,21 +21,50 @@ http://localhost:3000
 
 | 名称 | 作用 |
 | --- | --- |
-| Node.js | 让 JavaScript 工具能在电脑终端里运行 |
-| npm | 安装依赖、执行项目命令 |
-| npx | 临时运行 npm 包里的工具，例如创建项目 |
-| Next.js | Web 项目框架，负责页面、路由、开发服务器和构建 |
-| React | 界面库，用组件描述页面 |
-| TypeScript | 类型系统，写代码时帮助减少错误 |
+| Node.js | 承载构建和运行的环境，让 JavaScript 能在电脑上运行 |
+| npm | 下载依赖、管理工具包、执行项目命令 |
+| npx | 一次性运行 npm 包里的工具，例如创建项目 |
+| TypeScript | 在开发阶段检查类型，帮助减少代码错误 |
+| JSX | 在 `.tsx` 文件里描述 UI 结构 |
+| React | 作为界面核心库，负责组件状态和页面渲染逻辑 |
+| Next.js | Web 应用框架，负责路由、开发服务器、构建、服务端渲染和 API |
+| SWC | Next.js 底层默认使用的编译器，负责把源码转换成可运行的 JavaScript |
 
 简单理解：
 
 ```txt
-Node.js 是运行环境
-npm 是命令入口
-Next.js 是项目框架
-React 是写界面的方式
-TypeScript 是写代码时的类型检查
+开发阶段：
+  你编写 .tsx 文件
+  TypeScript 负责类型检查
+  JSX 负责描述 UI 结构
+
+构建阶段：
+  执行 npm run build
+  Next.js 指挥底层编译器 SWC
+  把 .tsx 源码转换、压缩成浏览器和服务器能运行的 .js 文件
+
+运行阶段：
+  React 嵌入在打包后的 JavaScript 中
+  负责组件状态管理和页面渲染逻辑
+  Next.js 负责路由分发、服务端渲染和后端 API
+
+环境支撑：
+  Node.js 是构建和运行的地基
+  npm 是下载和管理工具包的管家
+```
+
+编译成 JavaScript 后，项目仍然需要 React。
+
+原因是 JSX 编译后的 JavaScript 并不是直接操作浏览器 DOM 的代码，而是会调用 React 提供的函数，生成一份描述页面结构的 JavaScript 对象。这个对象可以理解成页面蓝图，浏览器本身不认识它。
+
+React 和 `react-dom` 会在运行时读取这份蓝图，再调用浏览器底层 API，把它变成真实页面。页面状态变化时，React 还会比较新旧蓝图，只更新真正变化的部分。
+
+所以可以这样记：
+
+```txt
+SWC / Babel 负责翻译语法
+React 负责运行时渲染和状态更新
+react-dom 负责把 React 结果放进浏览器 DOM
 ```
 
 ## 三、npm run dev 做了什么
@@ -194,12 +221,6 @@ import { featureCards } from "@/lib/mock-data";
 
 ```txt
 ai-finance-cfo/lib/mock-data.ts
-```
-
-不是：
-
-```txt
-ai-finance-cfo/app/lib/mock-data.ts
 ```
 
 ## 八、package.json

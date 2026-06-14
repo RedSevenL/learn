@@ -1,3 +1,5 @@
+import type { Account } from "@/types/finance";
+
 export const featureCards = [
     {
       href: "/chat",
@@ -64,4 +66,25 @@ export const featureCards = [
     "我两年内能攒够 50 万吗？",
     "如果我每月多花 2000 元，会影响储蓄目标吗？",
     "信用卡应该优先还哪一张？"
+  ];
+
+  export const initialAccounts: Account[] = [
+    {
+      id: "account_001",
+      name: "工资卡",
+      type: "bank",
+      balance: 20000
+    },
+    {
+      id: "account_002",
+      name: "现金",
+      type: "cash",
+      balance: 1000
+    },
+    {
+      id: "account_003",
+      name: "信用卡",
+      type: "credit",
+      balance: -3500
+    }
   ];
