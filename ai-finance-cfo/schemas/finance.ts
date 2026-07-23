@@ -67,3 +67,11 @@ export const createAccountSchema = z.object({
   export type CreateLiabilityInput = z.infer<
     typeof createLiabilitySchema
   >;
+
+  export const updateAccountSchema = createAccountSchema
+  .partial()
+  .refine((value) => Object.keys(value).length > 0, {
+    message: "至少需要提供一个要更新的字段"
+  });
+
+export type UpdateAccountInput = z.infer<typeof updateAccountSchema>;

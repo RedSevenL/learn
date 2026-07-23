@@ -14,12 +14,14 @@ Drizzle + SQLite
 
 CRUD 是四个基础操作：
 
-| 操作 | 含义 | HTTP 方法示例 |
-| --- | --- | --- |
-| Create | 新增 | `POST /api/accounts` |
-| Read | 查询 | `GET /api/accounts` |
-| Update | 更新 | `PATCH /api/accounts/:id` |
-| Delete | 删除 | `DELETE /api/accounts/:id` |
+
+| 操作     | 含义  | HTTP 方法示例                  |
+| ------ | --- | -------------------------- |
+| Create | 新增  | `POST /api/accounts`       |
+| Read   | 查询  | `GET /api/accounts`        |
+| Update | 更新  | `PATCH /api/accounts/:id`  |
+| Delete | 删除  | `DELETE /api/accounts/:id` |
+
 
 本课重点：
 
@@ -37,6 +39,8 @@ CRUD 是四个基础操作：
 - 实现账户新增、查询、编辑、删除。
 - 实现流水和负债新增、查询。
 - 让前端请求失败时显示错误提示。
+
+
 
 ## 一、为什么需要 service 层
 
@@ -76,6 +80,8 @@ lib/db/client.ts
 一句话：
 
 > Route Handler 管 HTTP，service 管业务和数据库。
+
+
 
 ## 二、统一 API 返回格式
 
@@ -297,6 +303,8 @@ deletedAt
 ```txt
 deletedAt 为空
 ```
+
+
 
 ## 五、账户列表和新增 API
 
@@ -546,6 +554,8 @@ export async function POST(request: Request) {
 }
 ```
 
+
+
 ## 八、负债 service 和 API
 
 负债同样先做新增和列表。
@@ -644,6 +654,8 @@ export async function POST(request: Request) {
   );
 }
 ```
+
+
 
 ## 九、用 fetch 测试 API
 
@@ -778,6 +790,8 @@ useEffect
 "use client";
 ```
 
+
+
 ## 十一、前端新增账户
 
 表单提交时，不再直接更新本地数组。
@@ -835,6 +849,8 @@ service 写入 SQLite
   ↓
 前端更新列表
 ```
+
+
 
 ## 十二、前端删除账户
 
@@ -940,11 +956,15 @@ if (isLoading) {
 
 这三种状态要分清楚：
 
-| 状态 | 含义 |
-| --- | --- |
-| loading | 还不知道有没有数据 |
-| empty | 请求成功，但数据为空 |
-| error | 请求失败，不能确定数据状态 |
+
+| 状态      | 含义            |
+| ------- | ------------- |
+| loading | 还不知道有没有数据     |
+| empty   | 请求成功，但数据为空    |
+| error   | 请求失败，不能确定数据状态 |
+
+
+
 
 ## 十五、为什么本课仍然保留第 19 课
 
@@ -954,10 +974,12 @@ if (isLoading) {
 
 两课区别是：
 
-| 课程 | 重点 |
-| --- | --- |
-| 第 18 课 | 把 CRUD 能力写出来 |
+
+| 课程     | 重点                                              |
+| ------ | ----------------------------------------------- |
+| 第 18 课 | 把 CRUD 能力写出来                                    |
 | 第 19 课 | 把表单、API、Zod、service、Drizzle、SQLite 的完整链路复盘和整理稳定 |
+
 
 也就是说，本课先把功能跑起来。
 
@@ -968,7 +990,11 @@ if (isLoading) {
 - 刷新后数据是否仍存在。
 - 账户 CRUD 数据流是否能画出来。
 
+
+
 ## 十六、常见错误
+
+
 
 ### 1. 页面仍然使用 mock-data
 
@@ -983,6 +1009,8 @@ initialAccounts
 ```txt
 GET /api/accounts
 ```
+
+
 
 ### 2. 忘记运行 drizzle-kit push
 
@@ -1006,6 +1034,8 @@ npx drizzle-kit push
 currency: z.string().trim().length(3).default("CNY")
 ```
 
+
+
 ### 4. 删除后列表仍然显示
 
 如果使用软删除，列表查询必须排除：
@@ -1020,6 +1050,8 @@ deletedAt 不为空的数据
 where(isNull(accounts.deletedAt))
 ```
 
+
+
 ### 5. API 里混入太多数据库代码
 
 如果 `route.ts` 很长，说明该抽 service 层。
@@ -1033,70 +1065,3 @@ API 文件应该更像：
 返回响应
 ```
 
-## 十七、实践任务
-
-完成下面任务：
-
-1. 创建 `lib/api/response.ts`。
-2. 创建 `lib/services/accounts.ts`。
-3. 实现账户列表、新增、查询单个、更新、软删除。
-4. 改造 `app/api/accounts/route.ts`。
-5. 创建 `app/api/accounts/[id]/route.ts`。
-6. 创建 `lib/services/transactions.ts` 和 `app/api/transactions/route.ts`。
-7. 创建 `lib/services/liabilities.ts` 和 `app/api/liabilities/route.ts`。
-8. 用浏览器 Console 测试账户 CRUD。
-9. 在仪表盘页面用 `fetch` 请求账户列表。
-10. 给页面补上 loading、empty、error 状态。
-
-## 十八、验收标准
-
-完成后检查：
-
-- `GET /api/accounts` 能返回数据库账户列表。
-- `POST /api/accounts` 能新增账户。
-- `PATCH /api/accounts/:id` 能更新账户。
-- `DELETE /api/accounts/:id` 能软删除账户。
-- `GET /api/transactions` 能返回流水列表。
-- `POST /api/transactions` 能新增流水。
-- `GET /api/liabilities` 能返回负债列表。
-- `POST /api/liabilities` 能新增负债。
-- 非法请求会返回 `400 VALIDATION_ERROR`。
-- 前端加载失败时有错误提示。
-- 空列表时有空状态。
-
-## 十九、复习问题
-
-1. CRUD 分别代表什么？
-2. 为什么要把数据库逻辑放进 service 层？
-3. Route Handler 应该负责什么？
-4. Zod 校验应该发生在数据库写入前还是后？
-5. 为什么删除账户时优先使用软删除？
-6. 前端 loading、empty、error 三种状态有什么区别？
-7. `POST /api/accounts` 的完整数据流是什么？
-8. 第 19 课还需要继续整理什么？
-
-## 二十、本课小结
-
-这一课把阶段三的主要能力连了起来：
-
-```txt
-前端 fetch
-  ↓
-Route Handler
-  ↓
-Zod 校验
-  ↓
-service 层
-  ↓
-Drizzle
-  ↓
-SQLite
-```
-
-现在账户已经可以完成新增、列表、编辑、删除。
-
-流水和负债也可以先完成新增和列表。
-
-前端不再只依赖本地假数据，而是开始通过 API 获取真实保存到 SQLite 的数据。
-
-下一课会做阶段三整合，重点检查账户表单到数据库写入的完整链路，并把 API、schema、service、db 分层整理得更清楚。

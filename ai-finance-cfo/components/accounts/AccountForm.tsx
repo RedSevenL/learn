@@ -6,10 +6,11 @@ type AccountFormProps = {
   type: Account["type"];
   balance: string;
   error: string;
+  isSubmitting: boolean;
   onNameChange: (value: string) => void;
   onTypeChange: (value: Account["type"]) => void;
   onBalanceChange: (value: string) => void;
-  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onSubmit: (event: React.SyntheticEvent<HTMLFormElement>) => void;
 };
 
 export function AccountForm({
@@ -17,10 +18,11 @@ export function AccountForm({
   type,
   balance,
   error,
+  isSubmitting,
   onNameChange,
   onTypeChange,
   onBalanceChange,
-  onSubmit
+  onSubmit,
 }: AccountFormProps) {
   return (
     <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
@@ -70,9 +72,10 @@ export function AccountForm({
 
         <button
           type="submit"
-          className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+          disabled={isSubmitting}
+          className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
-          新增账户
+          {isSubmitting ? "提交中..." : "新增账户"}
         </button>
       </form>
     </section>

@@ -6,7 +6,7 @@ git add .
 提交至本地：
 git commit -m "你的提交信息"
 推送至云端：
-git push origin main
+git push
 
 ## 提交规范：约定式提交前缀 (Conventional Commits)
 

@@ -47,11 +47,15 @@ let isStudent: boolean = true;
 
 常见基础类型：
 
-| 类型 | 含义 | 示例 |
-| --- | --- | --- |
-| `number` | 数字 | `18`、`3.14` |
-| `string` | 字符串 | `"hello"` |
+
+| 类型        | 含义  | 示例             |
+| --------- | --- | -------------- |
+| `number`  | 数字  | `18`、`3.14`    |
+| `string`  | 字符串 | `"hello"`      |
 | `boolean` | 布尔值 | `true`、`false` |
+
+
+
 
 ## 4. 字面量类型
 
@@ -72,6 +76,8 @@ gender = "female";
 ```ts
 let direction: "left" | "right" | "up" | "down";
 ```
+
+
 
 ## 5. 可选属性
 
@@ -94,6 +100,8 @@ user = {
 - 也可以没有 `age`。
 - 如果有，必须是 `number`。
 
+
+
 ## 6. 联合类型
 
 竖线 `|` 表示“可以是其中一种类型”。
@@ -111,7 +119,11 @@ id = "user_101";
 - 某个参数支持多种类型。
 - 某个字段只允许几个固定选项。
 
+
+
 ## 7. 数组与元组
+
+
 
 ### 数组
 
@@ -127,6 +139,8 @@ let names: string[] = ["Alex", "Simon"];
 ```ts
 let scores: Array<number> = [90, 85, 100];
 ```
+
+
 
 ### 元组 Tuple
 
@@ -145,6 +159,8 @@ let userInfo: [string, number] = ["Alex", 18];
 ```ts
 // let wrong: [string, number] = [18, "Alex"]; // 报错
 ```
+
+
 
 ## 8. 数组里的 ...
 
@@ -192,6 +208,8 @@ console.log(rest);   // [30, 40]
 const [head, ...tail] = nums;
 ```
 
+
+
 ### 函数里的剩余参数
 
 函数参数里也可以用 `...` 接收任意数量的参数。
@@ -235,6 +253,8 @@ const user: User = {
 - 规定每个属性是什么类型。
 - 让数据结构更清晰。
 
+
+
 ## 10. 函数参数类型和返回值类型
 
 函数也可以指定参数类型和返回值类型。
@@ -259,9 +279,18 @@ function logMessage(message: string): void {
 }
 ```
 
+
+
 ## 11. 函数泛型 Generic Function
 
-泛型可以理解为“先不固定具体类型，等调用时再确定类型”。
+泛型可以理解为“先不固定具体类型，等调用时再确定类型”，在调用时需要传入类型参数，如果能直接推断出类型就不用传类型参数。
+
+
+|                                     |               |                                                  |                                        |
+| ----------------------------------- | ------------- | ------------------------------------------------ | -------------------------------------- |
+| `useState("")`                      | `""`（string）  | 能 → 知道是 string                                   | 不用加 `<>`                               |
+| `useState<Account["type"]>("bank")` | `"bank"`（字面量） | 能，但会推断成 `"bank"`，不是 `"bank" | "credit" | "cash"` | **需要加**，否则以后赋值 `setType("credit")` 会报错 |
+
 
 普通函数如果写死类型，只能处理一种数据：
 
@@ -279,8 +308,12 @@ function identity<T>(value: T): T {
 }
 
 const a = identity<number>(123);
+//123很显然是数字，即使不加<number>也能推断出来
 const b = identity<string>("hello");
+//同理这个也能推断出是 string
 ```
+
+
 
 ### 明白尖括号 <>
 
@@ -292,9 +325,7 @@ function identity<T>(value: T): T {
 }
 ```
 
-这里的 `<T>` 表示：先声明一个临时类型变量 `T`。
-
-后面的两个 `T` 表示使用这个类型变量：
+这里的 `<T>` 表示：先用 `T`来占位，用时再填入具体类型，比如 number，string 或自定义类型，后面的两个 `T` 表示使用这个类型变量：
 
 ```ts
 value: T // 参数是什么类型
@@ -304,7 +335,7 @@ value: T // 参数是什么类型
 所以这段代码的意思是：
 
 - `T` 不是固定类型。
-- 调用函数时，`T` 会变成具体类型。
+- 调用函数时，`T` 要填入或推断出具体类型。
 - `value: T` 和返回值 `: T` 表示输入什么类型，就返回什么类型。
 
 调用时也可以用 `<>` 明确指定类型：
@@ -327,6 +358,8 @@ const b = identity("hello"); // 推断为 string
 
 > 定义函数时，`<T>` 是声明一个类型变量；调用函数时，`<number>` 是指定这次用什么具体类型。
 
+
+
 ### 泛型数组
 
 泛型常用于处理数组。
@@ -345,6 +378,8 @@ const firstName = getFirst(["Alex", "Simon"]);
 - 传入 `number[]`，返回 `number`。
 - 传入 `string[]`，返回 `string`。
 - 函数逻辑复用，但类型仍然准确。
+
+
 
 ### 多个泛型参数
 
@@ -374,7 +409,97 @@ const pair = makePair("age", 18);
 - 输入和输出类型没有关系。
 - 直接写具体类型更清晰。
 
-## 12. 类型断言 as
+
+
+## 12. 常见的内置工具类型
+
+TypeScript 提供了一些内置的泛型工具类型，用于常见的类型变换。
+
+### `Record<K, V>`
+
+键 → 值的映射类型。
+
+```ts
+type Zone = "A" | "B" | "C" | "D";
+
+// 等价于手写：{ A: number; B: number; C: number; D: number }
+const numbers: Record<Zone, number> = {
+  A: 10,
+  B: 20,
+  C: 30,
+  D: 40,
+};
+```
+
+当键集合会变化时，用 `Record` 比手写每个字段更省事——改一处 `Zone` 的定义，所有 `Record<Zone, number>` 自动同步。
+
+### `Partial<T>`
+
+把对象类型的所有属性变成可选，比如用于账户更新信息时，不用所有属性都重传一遍。
+
+```ts
+interface User {
+  name: string;
+  age: number;
+}
+
+// 结果是 { name?: string; age?: number }
+const partial: Partial<User> = { name: "Alex" };
+```
+
+
+
+### `Pick<T, K>`
+
+从对象类型中选取一部分属性，比如某些页面只需要展示名字和邮件。
+
+```ts
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+// 只取 name 和 email
+const picked: Pick<User, "name" | "email"> = {
+  name: "Alex",
+  email: "a@b.com",
+};
+```
+
+
+
+### `Omit<T, K>`
+
+从对象类型中去掉一部分属性（与 `Pick` 相反）。
+
+```ts
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+// 去掉 email，保留其他属性
+const omitted: Omit<User, "email"> = { name: "Alex", age: 18 };
+```
+
+
+
+### 总结表格
+
+
+| 工具类型           | 作用         | 示例                                          |
+| -------------- | ---------- | ------------------------------------------- |
+| `Record<K, V>` | 键 → 值的映射   | `Record<"A"                                 |
+| `Partial<T>`   | 所有属性变可选    | `Partial<{ x: number }>` → `{ x?: number }` |
+| `Pick<T, K>`   | 从 T 中选部分键  | `Pick<{a,b,c}, "a"                          |
+| `Omit<T, K>`   | 从 T 中去掉部分键 | `Omit<{a,b,c}, "a">` → `{ b: ...; c: ... }` |
+
+
+
+
+## 13. 类型断言 as
 
 `as` 表示类型断言：告诉 TypeScript“我比你更清楚这个值的类型”。
 
@@ -418,7 +543,9 @@ console.log(input.value);
 
 > `as HTMLInputElement`、`as HTMLElement` 这类 DOM 类型断言更常见；`as number` 只在值来自 `unknown`、外部数据或 TS 无法推断时才会用。
 
-## 13. 回调函数签名
+
+
+## 14. 回调函数签名
 
 如果函数参数本身也是函数，就需要指定回调函数的类型。
 
@@ -447,7 +574,9 @@ callback: (name: string) => void
 - 它接收一个 `string` 类型参数。
 - 它没有返回值。
 
-## 14. type 类型别名
+
+
+## 15. type 类型别名
 
 `type` 可以给类型起别名，让复杂类型更好复用。
 
@@ -479,8 +608,11 @@ const product: Product = {
 - 联合类型较长。
 - 对象结构会重复使用。
 - 函数签名较复杂。
+- 一般对象名小写开头，类型名大写开头
 
-## 15. interface 与 type 的简单区别
+
+
+## 16. interface 与 type 的简单区别
 
 基础阶段可以先这样记：
 
@@ -497,7 +629,9 @@ interface User {
 type Status = "loading" | "success" | "error";
 ```
 
-## 16. 代码编写顺序：先写主体，再标注类型
+
+
+## 17. 代码编写顺序：先写主体，再标注类型
 
 入门阶段写 TypeScript，可以先按 JavaScript 的思路把主体逻辑写出来，再逐步补充类型。
 
@@ -561,7 +695,9 @@ const user: User = {
 > 练习时：先写逻辑，再补类型。  
 > 做项目时：核心数据结构和函数边界要尽早定类型。
 
-## 17. 本节重点
+
+
+## 18. 本节重点
 
 - TS 是带类型检查的 JS。
 - `tsconfig.json` 用来配置 TS 编译行为。
@@ -573,6 +709,7 @@ const user: User = {
 - `interface` 用来定义对象结构。
 - 函数可以指定参数类型和返回值类型。
 - 泛型让函数在复用逻辑的同时保留准确的输入输出类型关系。
+- 内置工具类型（`Record`、`Partial`、`Pick`、`Omit`）是泛型的常见应用，用于快速做类型变换。
 - `as` 是类型断言，DOM 类型断言比 `as number` 更常见。
 - 回调函数也需要指定函数签名。
 - `type` 可以给复杂类型起别名。

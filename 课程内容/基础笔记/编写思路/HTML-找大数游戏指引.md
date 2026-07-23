@@ -205,6 +205,8 @@ type GameState = {
   score: number;
   numbers: Record<Zone, number>;
 };
+
+这里的语法：Record<有哪些键, 每个键的值是什么类型>
 ```
 
 然后创建初始状态：

@@ -1,19 +1,22 @@
-import { successResponse, errorResponse } from "@/lib/api/response";
-import { createAccountSchema } from "@/schemas/finance";
+import { errorResponse, successResponse } from "@/lib/api/response";
+import {
+  createTransaction,
+  listTransactions
+} from "@/lib/services/transactions";
 import { formatZodError } from "@/schemas/format-zod-error";
-import { createAccount, listAccounts } from "@/lib/services/accounts";
+import { createTransactionSchema } from "@/schemas/finance";
 
 export async function GET() {
-  const accounts = await listAccounts();
+  const transactions = await listTransactions();
 
   return successResponse({
-    accounts
+    transactions
   });
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const result = createAccountSchema.safeParse(body);
+  const result = createTransactionSchema.safeParse(body);
 
   if (!result.success) {
     return errorResponse(
@@ -26,11 +29,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const account = await createAccount(result.data);
+  const transaction = await createTransaction(result.data);
 
   return successResponse(
     {
-      account
+      transaction
     },
     { status: 201 }
   );

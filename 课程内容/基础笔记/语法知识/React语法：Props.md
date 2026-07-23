@@ -9,8 +9,8 @@
 如果类比 C++：
 
 ```txt
-props 类似函数形参
-父组件传入的数据类似实参
+props 类似函数形参，作用域是函数内
+父组件传入的数据类似实参，是具体内容
 ```
 
 React 组件本质上也是函数：
@@ -36,10 +36,12 @@ AccountList({
 });
 ```
 
-所以一句话：
+总结：
 
 ```txt
-组件标签上的属性，最终都会变成子组件收到的 props 对象里的字段。
+组件标签上的属性，最终都会变成子组件收到的 props 对象里的字段
+此处结构是 props{accounts, title}
+accounts 可以是对象数组 accounts[{id:1, name:"支付宝"}{id:2, name:"微信支付"}]
 ```
 
 ## 二、左右两个 accounts 的区别
@@ -51,7 +53,7 @@ AccountList({
 这两个 `accounts` 角色不同：
 
 ```txt
-左边 accounts：props 字段名，子组件用这个名字接收
+左边 accounts：props 字段名，子组件用这个名字调用
 右边 accounts：当前父组件里的真实变量
 ```
 
@@ -76,7 +78,11 @@ accounts：传给子组件后的名字
 accountData：父组件里的数据变量
 ```
 
+
+
 ## 三、子组件的两种接收方式
+
+
 
 ### 方式一：用 props 对象接收
 
@@ -129,6 +135,8 @@ function AccountList(props) {
 子组件可以直接用 props 接收，也可以用解构把字段单独拿出来。
 ```
 
+
+
 ## 四、TypeScript 里给 props 加类型
 
 先定义数据类型：
@@ -172,7 +180,11 @@ Account[] 表示账户对象数组
 AccountListProps 表示 AccountList 组件接收的 props 结构
 ```
 
+
+
 ## 五、props 的重要规则
+
+
 
 ### 1. props 从父组件传给子组件
 
@@ -233,6 +245,8 @@ function AccountList({ data }) {}
 
 ## 六、常见误区
 
+
+
 ### 误区一：以为左右两个 accounts 是同一个东西
 
 ```tsx
@@ -245,6 +259,8 @@ function AccountList({ data }) {}
 左边 accounts：props 名字
 右边 accounts：变量值
 ```
+
+
 
 ### 误区二：以为 React 会分别传多个参数
 
@@ -269,6 +285,8 @@ AccountList({
 ```txt
 无论传进去多少个属性，最终都会被打包成一个 props 对象。
 ```
+
+
 
 ### 误区三：以为 props 只能传字符串
 

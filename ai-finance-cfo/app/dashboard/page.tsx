@@ -1,46 +1,129 @@
-"use client";
+"use client";//告诉浏览器这是客户端组件
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AccountForm } from "@/components/accounts/AccountForm";
 import { AccountList } from "@/components/accounts/AccountList";
-import { initialAccounts } from "@/lib/mock-data";
 import type { Account } from "@/types/finance";
 
 export default function DashboardPage() {
-  const [accounts, setAccounts] = useState<Account[]>(initialAccounts);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [name, setName] = useState("");
   const [type, setType] = useState<Account["type"]>("bank");
   const [balance, setBalance] = useState("");
-  const [error, setError] = useState("");
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    async function loadAccounts() {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const response = await fetch("/api/accounts");
+        const result = await response.json();
+
+        if (!result.ok) {
+          setError(result.error.message);
+          return;
+        }
+
+        setAccounts(result.data.accounts);
+      } catch {
+        setError("账户数据加载失败，请稍后重试。");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadAccounts();
+  }, []);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    const trimmedName = name.trim();
-    const numericBalance = Number(balance);
-
-    if (trimmedName.length === 0) {
-      setError("请输入账户名称。");
-      return;
-    }
-
-    if (!Number.isFinite(numericBalance)) {
-      setError("请输入合法的账户余额。");
-      return;
-    }
-
-    const newAccount: Account = {
-      id: `account_${Date.now()}`,
-      name: trimmedName,
-      type,
-      balance: numericBalance
-    };
-
-    setAccounts([...accounts, newAccount]);
-    setName("");
-    setType("bank");
-    setBalance("");
     setError("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/accounts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name,
+          type,
+          balance
+        })
+      });
+
+      const result = await response.json();
+
+      if (!result.ok) {
+        const firstIssue = result.error.issues?.[0];
+        setError(firstIssue?.message ?? result.error.message);
+        return;
+      }
+
+      setAccounts((currentAccounts) => [
+        ...currentAccounts,
+        result.data.account
+      ]);
+
+      setName("");
+      setType("bank");
+      setBalance("");
+    } catch {
+      setError("新增账户失败，请稍后重试。");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  async function handleDeleteAccount(id: string) {
+    const response = await fetch(`/api/accounts/${id}`, {
+      method: "DELETE"
+    });
+
+    const result = await response.json();
+
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
+
+    setAccounts((currentAccounts) =>
+      currentAccounts.filter((account) => account.id !== id)
+    );
+  }
+
+  async function handleUpdateBalance(id: string, balance: string) {
+    const response = await fetch(`/api/accounts/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        balance
+      })
+    });
+
+    const result = await response.json();
+
+    if (!result.ok) {
+      setError(result.error.message);
+      return;
+    }
+
+    setAccounts((currentAccounts) =>
+      currentAccounts.map((account) =>
+        account.id === id ? result.data.account : account
+      )
+    );
+  }
+
+  if (isLoading) {
+    return <p className="text-sm text-gray-500">正在加载账户数据...</p>;
   }
 
   return (
@@ -55,11 +138,18 @@ export default function DashboardPage() {
           </p>
         </header>
 
+        {error && (
+          <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+            {error}
+          </p>
+        )}
+
         <AccountForm
           name={name}
           type={type}
           balance={balance}
           error={error}
+          isSubmitting={isSubmitting}
           onNameChange={setName}
           onTypeChange={setType}
           onBalanceChange={setBalance}

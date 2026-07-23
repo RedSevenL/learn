@@ -4,5 +4,9 @@ export type Account = {
   id: string;
   name: string;
   type: AccountType;
-  balance: number;
+  currency: string;
+  balance: string;
+  createdAt: number;
+  updatedAt: number;
+  deletedAt: number | null;
 };

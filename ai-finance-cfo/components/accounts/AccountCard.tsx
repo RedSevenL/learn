@@ -22,7 +22,7 @@ function getAccountTypeLabel(type: Account["type"]) {
 
 export function AccountCard({ account }: AccountCardProps) {
   const balanceClassName =
-    account.balance < 0 ? "text-red-600" : "text-gray-900";
+   Number(account.balance)  ? "text-red-600" : "text-gray-900";
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
@@ -35,7 +35,7 @@ export function AccountCard({ account }: AccountCardProps) {
         </div>
 
         <p className={`text-right text-lg font-semibold ${balanceClassName}`}>
-          {account.balance.toLocaleString()} 元
+         {Number(account.balance).toLocaleString()} 元
         </p>
       </div>
     </div>

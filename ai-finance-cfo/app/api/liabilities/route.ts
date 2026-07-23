@@ -1,19 +1,22 @@
-import { successResponse, errorResponse } from "@/lib/api/response";
-import { createAccountSchema } from "@/schemas/finance";
+import { errorResponse, successResponse } from "@/lib/api/response";
+import {
+  createLiability,
+  listLiabilities
+} from "@/lib/services/liabilities";
 import { formatZodError } from "@/schemas/format-zod-error";
-import { createAccount, listAccounts } from "@/lib/services/accounts";
+import { createLiabilitySchema } from "@/schemas/finance";
 
 export async function GET() {
-  const accounts = await listAccounts();
+  const liabilities = await listLiabilities();
 
   return successResponse({
-    accounts
+    liabilities
   });
 }
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const result = createAccountSchema.safeParse(body);
+  const result = createLiabilitySchema.safeParse(body);
 
   if (!result.success) {
     return errorResponse(
@@ -26,12 +29,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const account = await createAccount(result.data);
+  const liability = await createLiability(result.data);
 
   return successResponse(
     {
-      account
+      liability
     },
     { status: 201 }
   );
 }
+
