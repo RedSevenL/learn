@@ -37,7 +37,7 @@ export const createAccountSchema = z.object({
   export const createTransactionSchema = z.object({
     accountId: z.string().trim().min(1, "账户 ID 不能为空"),
     occurredAt: z.number().int().positive("流水时间不能为空"),
-    amount: moneyStringSchema,
+    amount: positiveMoneyStringSchema,
     direction: transactionDirectionSchema,
     category: z.string().trim().optional(),
     merchant: z.string().trim().optional(),

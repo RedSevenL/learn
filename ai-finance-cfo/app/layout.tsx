@@ -11,6 +11,7 @@ const navItems = [
   { href: "/", label: "首页" },
   { href: "/chat", label: "对话" },
   { href: "/dashboard", label: "仪表盘" },
+  { href: "/goals", label: "储蓄目标" },
   { href: "/scenarios", label: "场景模拟" },
   { href: "/import", label: "CSV 导入" }
 ];
