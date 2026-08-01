@@ -1,11 +1,22 @@
 import { SAVINGS_GOAL_FORMULA_VERSION } from "./savings-goal";
 import type { SavingsGoalInput, SavingsGoalResult } from "./savings-goal";
 
+// ── ModelTrace 类型 ───────────────────────────────
+
+export type ModelTrace = {
+  provider: "deepseek";
+  model: string;
+  parsedIntent: "savings_goal";
+};
+
+// ── 历史构造 ──────────────────────────────────────
+
 export function buildSavingsGoalHistory(
   input: SavingsGoalInput,
   result: SavingsGoalResult,
   id: string,
   createdAt: number,
+  modelTrace: ModelTrace | null = null,
 ) {
   const { steps, ...output } = result;
 
@@ -25,7 +36,7 @@ export function buildSavingsGoalHistory(
       steps,
     }),
     outputJson: JSON.stringify(output),
-    modelTraceJson: null,
+    modelTraceJson: modelTrace ? JSON.stringify(modelTrace) : null,
     createdAt,
   };
 }

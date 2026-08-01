@@ -13,7 +13,8 @@ const navItems = [
   { href: "/dashboard", label: "仪表盘" },
   { href: "/goals", label: "储蓄目标" },
   { href: "/scenarios", label: "场景模拟" },
-  { href: "/import", label: "CSV 导入" }
+  { href: "/import", label: "CSV 导入" },
+  { href: "/history", label: "计算历史" },
 ];
 
 export default function RootLayout({
@@ -25,12 +26,12 @@ export default function RootLayout({
     <html lang="zh-CN">
       <body>
         <header className="border-b border-gray-200 bg-white">
-          <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-4">
             <Link href="/" className="text-sm font-semibold text-gray-900">
               AI 个人财务 CFO
             </Link>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               {navItems.map((item) => (
                 <Link
                   key={item.href}

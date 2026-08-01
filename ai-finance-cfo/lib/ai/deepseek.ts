@@ -31,7 +31,8 @@ export type DeepSeekErrorCode =
   | "http_error"
   | "invalid_response"
   | "empty_content"
-  | "truncated_output";
+  | "truncated_output"
+  | "invalid_intent";
 
 export class DeepSeekError extends Error {
   constructor(
@@ -56,6 +57,10 @@ type RequestDeepSeekJsonInput = {
 
 // ── 环境变量读取（函数执行时，非模块加载时） ─────
 
+export function getDeepSeekModelName() {
+  return process.env.DEEPSEEK_MODEL ?? DEFAULT_MODEL;
+}
+
 function getDeepSeekConfig() {
   const apiKey = process.env.DEEPSEEK_API_KEY;
 
@@ -68,7 +73,7 @@ function getDeepSeekConfig() {
 
   return {
     apiKey,
-    model: process.env.DEEPSEEK_MODEL ?? DEFAULT_MODEL,
+    model: getDeepSeekModelName(),
   };
 }
 

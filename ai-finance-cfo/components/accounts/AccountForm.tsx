@@ -28,7 +28,7 @@ export function AccountForm({
     <section className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <h2 className="text-lg font-semibold text-gray-900">新增账户</h2>
       <p className="mt-1 text-sm text-gray-500">
-        当前先用本地状态保存账户数据，后续课程再接入 API 和数据库。
+        账户会通过 API 保存到当前本地 SQLite 数据库。
       </p>
 
       <form onSubmit={onSubmit} className="mt-6 space-y-4">

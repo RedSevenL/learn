@@ -1,4 +1,7 @@
-import { requestDeepSeekJson } from "@/lib/ai/deepseek";
+import {
+  DeepSeekError,
+  requestDeepSeekJson,
+} from "@/lib/ai/deepseek";
 import { FINANCE_INTENT_PROMPT } from "@/lib/ai/prompts/finance-intent";
 import { parseFinanceIntent } from "@/lib/ai/parse-finance-intent";
 import type { FinanceIntent } from "@/schemas/ai-intent";
@@ -44,7 +47,8 @@ export async function parseIntentWithDeepSeek(
   const parsed = parseFinanceIntent(rawOutput);
 
   if (!parsed.success) {
-    throw new Error(
+    throw new DeepSeekError(
+      "invalid_intent",
       `DeepSeek 意图解析失败：${parsed.reason}`,
     );
   }

@@ -12,7 +12,8 @@ export default function HomePage() {
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-gray-600">
             AI 负责理解问题和组织表达，财务结果由确定性代码计算。
-            当前阶段先搭建页面骨架，后续逐步接入数据和 AI 能力。
+            你可以管理账户、导入流水、查看仪表盘，并通过
+            DeepSeek 解析受限财务意图和回看计算历史。
           </p>
         </header>
 

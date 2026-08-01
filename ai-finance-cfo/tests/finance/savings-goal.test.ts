@@ -2,6 +2,22 @@ import { describe, expect, it } from "vitest";
 import { calculateSavingsGoal } from "../../lib/finance/savings-goal";
 
 describe("calculateSavingsGoal", () => {
+  it("第 34 课固定演示输入得到可复核结果", () => {
+    const result = calculateSavingsGoal({
+      targetAmount: "500000",
+      currentAmount: "110000.00",
+      monthlySaving: "12000.00",
+      annualRate: "3",
+      months: 24,
+    });
+
+    expect(result.projectedAmount).toBe("413227.09");
+    expect(result.reached).toBe(false);
+    expect(result.gap).toBe("86772.91");
+    expect(result.excess).toBe("0.00");
+    expect(result.requiredMonthlySaving).toBe("15512.68");
+  });
+
   it("计算复利后的目标缺口和所需月储蓄额", () => {
     const result = calculateSavingsGoal({
       targetAmount: "500000",
