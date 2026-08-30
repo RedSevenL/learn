@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "AI 个人财务 CFO：高层运行时架构",
+    "locale": "zh-CN",
+    "output": "高层运行时架构.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/RedSevenL/learn",
+      "revision": "643dcdf3b14e504e9fb16c5757b0496d1858cbec"
+    },
+    "viewBox": [1280, 760],
+    "views": [
+      {
+        "id": "core-runtime",
+        "label": "核心请求链路",
+        "focus": ["user", "browser-ui", "route-handlers", "business-orchestration", "finance-engine", "data-access", "sqlite"],
+        "note": "从用户操作跟踪到确定性计算与本地持久化。"
+      },
+      {
+        "id": "ai-boundary",
+        "label": "AI 意图边界",
+        "focus": ["browser-ui", "route-handlers", "business-orchestration", "deepseek", "finance-engine"],
+        "note": "DeepSeek 只输出受限业务意图，金额由 TypeScript 函数计算。"
+      },
+      {
+        "id": "csv-path",
+        "label": "CSV 导入链路",
+        "focus": ["user", "browser-ui", "route-handlers", "business-orchestration", "data-access", "sqlite"],
+        "note": "浏览器解析与映射，服务端预览查重并在确认后批量写入。"
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "user",
+      "type": "external",
+      "label": "用户",
+      "sublabel": "财务数据与自然语言问题",
+      "pos": [30, 330],
+      "size": [140, 72],
+      "sources": [
+        { "path": "ai-finance-cfo/README.md", "line": 1, "label": "产品与主要数据流" }
+      ]
+    },
+    {
+      "id": "browser-ui",
+      "type": "frontend",
+      "label": "Next.js / React 页面",
+      "sublabel": "仪表盘、Chat、目标、场景、CSV 导入、历史",
+      "tag": "浏览器运行时",
+      "pos": [210, 315],
+      "size": [210, 102],
+      "sources": [
+        { "path": "ai-finance-cfo/app/layout.tsx", "line": 7, "label": "全局页面导航" },
+        { "path": "ai-finance-cfo/app/chat/page.tsx", "line": 138, "label": "Chat 调用同源 API" },
+        { "path": "ai-finance-cfo/app/import/page.tsx", "line": 79, "label": "CSV 导入状态机" }
+      ]
+    },
+    {
+      "id": "route-handlers",
+      "type": "backend",
+      "label": "App Router API",
+      "sublabel": "Route Handlers + Zod 输入/输出契约",
+      "tag": "Next.js 服务端",
+      "pos": [470, 315],
+      "size": [210, 102],
+      "sources": [
+        { "path": "ai-finance-cfo/app/api/chat/route.ts", "line": 12, "label": "Chat API 编排入口" },
+        { "path": "ai-finance-cfo/app/api/dashboard/route.ts", "line": 9, "label": "仪表盘 API" },
+        { "path": "ai-finance-cfo/lib/api/response.ts", "line": 1, "label": "统一响应封装" }
+      ]
+    },
+    {
+      "id": "business-orchestration",
+      "type": "backend",
+      "label": "业务编排层",
+      "sublabel": "Chat 上下文、CSV 查重、CRUD 与场景编排",
+      "pos": [730, 315],
+      "size": [220, 102],
+      "sources": [
+        { "path": "ai-finance-cfo/lib/chat/chat-service.ts", "line": 62, "label": "Chat 业务编排" },
+        { "path": "ai-finance-cfo/lib/services/csv-import.ts", "line": 14, "label": "CSV 预览与确认" },
+        { "path": "ai-finance-cfo/lib/services/accounts.ts", "line": 1, "label": "账户服务" }
+      ]
+    },
+    {
+      "id": "deepseek",
+      "type": "external",
+      "label": "DeepSeek API",
+      "sublabel": "自然语言 → 受限 FinanceIntent JSON",
+      "tag": "外部网络服务",
+      "pos": [730, 90],
+      "size": [220, 94],
+      "sources": [
+        { "path": "ai-finance-cfo/lib/ai/deepseek.ts", "line": 3, "label": "DeepSeek 端点与请求" },
+        { "path": "ai-finance-cfo/lib/ai/parse-intent-with-deepseek.ts", "line": 35, "label": "意图解析与校验" }
+      ]
+    },
+    {
+      "id": "finance-engine",
+      "type": "backend",
+      "label": "确定性财务引擎",
+      "sublabel": "Decimal.js + 纯 TypeScript 函数",
+      "tag": "AI 不计算金额",
+      "pos": [1020, 315],
+      "size": [220, 102],
+      "sources": [
+        { "path": "ai-finance-cfo/lib/finance/savings-goal.ts", "line": 177, "label": "储蓄目标计算" },
+        { "path": "ai-finance-cfo/lib/finance/dashboard.ts", "line": 243, "label": "仪表盘计算" },
+        { "path": "ai-finance-cfo/lib/finance/what-if.ts", "line": 248, "label": "What-if 计算" }
+      ]
+    },
+    {
+      "id": "data-access",
+      "type": "backend",
+      "label": "数据访问层",
+      "sublabel": "Service 函数 + Drizzle ORM",
+      "pos": [730, 535],
+      "size": [220, 90],
+      "sources": [
+        { "path": "ai-finance-cfo/lib/db/client.ts", "line": 1, "label": "Drizzle/libSQL 客户端" },
+        { "path": "ai-finance-cfo/lib/services/transactions.ts", "line": 1, "label": "流水读写" },
+        { "path": "ai-finance-cfo/lib/services/calculation-history.ts", "line": 1, "label": "计算历史读写" }
+      ]
+    },
+    {
+      "id": "sqlite",
+      "type": "database",
+      "label": "SQLite / libSQL",
+      "sublabel": "账户、流水、负债、场景、计算历史",
+      "tag": "本地优先持久化",
+      "pos": [1020, 525],
+      "size": [190, 110],
+      "sources": [
+        { "path": "ai-finance-cfo/lib/db/schema.ts", "line": 1, "label": "数据表定义" },
+        { "path": "ai-finance-cfo/.env.example", "line": 1, "label": "数据库地址配置" }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "本地设备 / 自托管 Next.js 运行时",
+      "wraps": ["browser-ui", "route-handlers", "business-orchestration", "finance-engine", "data-access", "sqlite"],
+      "pad": 24
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-interaction",
+      "from": "user",
+      "to": "browser-ui",
+      "label": "页面操作 / CSV / 问题",
+      "labelAt": [190, 431],
+      "variant": "emphasis"
+    },
+    {
+      "id": "ui-api",
+      "from": "browser-ui",
+      "to": "route-handlers",
+      "label": "同源 HTTP JSON",
+      "labelAt": [450, 431],
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-orchestration",
+      "from": "route-handlers",
+      "to": "business-orchestration",
+      "label": "校验后的命令 / 查询",
+      "labelAt": [705, 431],
+      "variant": "emphasis"
+    },
+    {
+      "id": "intent-request",
+      "from": "business-orchestration",
+      "to": "deepseek",
+      "label": "POST /chat/completions",
+      "variant": "dashed"
+    },
+    {
+      "id": "deterministic-calculation",
+      "from": "business-orchestration",
+      "to": "finance-engine",
+      "label": "结构化输入",
+      "variant": "emphasis"
+    },
+    {
+      "id": "read-write-services",
+      "from": "business-orchestration",
+      "to": "data-access",
+      "label": "CRUD / 查重 / 保存历史",
+      "labelAt": [840, 431]
+    },
+    {
+      "id": "calculation-history",
+      "from": "finance-engine",
+      "to": "data-access",
+      "label": "输入 + 公式版本 + 步骤 + 输出",
+      "labelAt": [985, 480]
+    },
+    {
+      "id": "orm-sqlite",
+      "from": "data-access",
+      "to": "sqlite",
+      "label": "Drizzle ORM / libSQL",
+      "labelAt": [985, 649]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "violet",
+      "title": "AI 边界",
+      "items": [
+        "DeepSeek 只把自然语言解析为受限意图",
+        "模型输出必须通过 Zod 契约后才进入业务层"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "计算与可追溯性",
+      "items": [
+        "金额与核心指标由 Decimal.js 与确定性函数计算",
+        "关键计算保存输入、公式版本、步骤和输出"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "本地优先数据流",
+      "items": [
+        "业务数据默认落入 SQLite/libSQL",
+        "CSV 先在浏览器解析与映射，服务端查重后批量写入"
+      ]
+    }
+  ]
+}
